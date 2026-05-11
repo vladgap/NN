@@ -604,4 +604,4 @@ class VectorBackProp:
         """
         Puts values to Wh, bh, Wo and bo from the list of lists as it is from self.export_weights().
         """
-        self.Wh, self.bh, self.Wo, self.bo = np.array(weights[0]), np.array(weights[1]), np.array(weights[2])
+        self.Wh, self.bh, self.Wo, self.bo = np.array(weights[0]), np.array(weights[1]), np.array(weights[2]), np.array(weights[3])
