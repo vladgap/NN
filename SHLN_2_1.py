@@ -342,6 +342,9 @@ class NN:
         return self.output_activations_export(self.hidden_activations_export(X))
 
 
+############################################################################################################
+############################################################################################################
+
 
 class NN2to1:
     def __init__(self, X, T, mesh, confidences=None, hidden_layers=1, hidden_activation='linear'):
@@ -375,7 +378,9 @@ class NN2to1:
 
     def show(self):
         self.predics=self.network.predict(self.X)
-        self.errors=(self.predics[:,0]-self.T[:,0])/self.T[:,0]*100
+        self.errors = np.where(self.T[:,0] != 0,
+                       (self.predics[:,0] - self.T[:,0]) / self.T[:,0] * 100,
+                       np.nan)
         self.mesh_predics=self.network.predict(self.mesh)
         self.__plot()
 
@@ -383,7 +388,12 @@ class NN2to1:
         fig = make_subplots(rows=1, cols=2, subplot_titles=('Errors','Model'), column_widths=[0.5, 0.5],
                         specs=[[{"secondary_y": True}, {"type": "scene"}]])
 
-        fig.add_trace(go.Scatter(x=self.T[:,0] , y=self.predics[:,0], mode='markers', marker_size=4, name='Predics', marker_color='black' ), 1, 1)
+        if self.confidences is None:
+            error_marker_size = 4
+        else:
+            c = np.asarray(self.confidences).flatten()
+            error_marker_size = 4 if c.max() == c.min() else 1 + 6 * (c - c.min()) / (c.max() - c.min())
+        fig.add_trace(go.Scatter(x=self.T[:,0] , y=self.predics[:,0], mode='markers', marker_size=error_marker_size, name='Predics', marker_color='black' ), 1, 1)
         fig.add_trace(go.Scatter(x=self.T[:,0], y=self.T[:,0], mode='lines', line_color='red', line_width=0.2, showlegend=False),1,1,secondary_y=False)
         fig.add_trace(go.Scatter(x=self.T[:,0] , y=self.errors, mode='markers', marker_size=4, name='Errors', marker_color='orange' ), 1, 1, secondary_y=True,)
 
