@@ -432,5 +432,3 @@ class NN2to1:
         fig.update_scenes(camera_projection_type="orthographic")
         self.fig = fig
         fig.show()
-        self.fig = fig
-        fig.show()
